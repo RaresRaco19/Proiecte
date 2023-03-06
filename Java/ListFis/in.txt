@@ -1,0 +1,4 @@
+Marcel;sef;2021-09-08;8000;
+Ion;developer;2022-07-17;4000;
+Ghita;sef;2021-04-24;7600;
+Ana;salubritate;2022-10-19;2300;

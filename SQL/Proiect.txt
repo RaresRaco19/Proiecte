@@ -1,0 +1,332 @@
+SET AUTOCOMMIT ON;
+SELECT SYSDATE FROM DUAL;
+ALTER SESSION SET NLS_DATE_FORMAT='DD-MM-YY';
+SET SERVEROUTPUT ON;
+
+CREATE TABLE Student
+(
+Nume varchar(15) NOT NULL,
+Prenume varchar(20) NOT NULL,
+Nr_leg varchar(6) PRIMARY KEY,
+Media_G number(4,2) DEFAULT 0 CHECK(Media_G between 0 and 10) ,
+Media_1 number DEFAULT 0 CHECK(Media_1 between 0 and 10) ,
+Media_2 number DEFAULT 0 CHECK(Media_2 between 0 and 10) ,
+Media_3 number DEFAULT 0 CHECK(Media_3 between 0 and 10) );
+
+CREATE TABLE Discipline
+(
+Cod_d integer PRIMARY KEY,
+N_disciplina varchar(15) NOT NULL,
+Anul_S integer NOT NULL CHECK(Anul_S between 1 and 3)
+);
+
+CREATE TABLE Note
+(
+Nr_leg VARCHAR(6) REFERENCES Student(Nr_leg) ON DELETE CASCADE,
+Cod_d integer NOT NULL REFERENCES Discipline(Cod_d),
+Nr_prezentare number NOT NULL,
+Nota number NOT NULL CHECK(Nota between 1 and 10),
+Data date);
+
+CREATE OR REPLACE FUNCTION Promo(cod integer)
+RETURN number IS
+P number;
+Total integer;
+Trecuti integer;
+BEGIN
+SELECT Count(nr_leg) INTO total FROM Note 
+WHERE cod_d=cod;
+SELECT Count(nr_leg) INTO Trecuti FROM Note
+WHERE cod_d=cod
+Having MAX(nota)>4
+GROUP BY nr_leg;
+P:=(Trecuti/Total)*100;
+RETURN P;
+END;
+/
+
+
+CREATE OR REPLACE PROCEDURE adaugare_student(N varchar,P varchar,Nr varchar,Mg number,M1 number,M2 number,M3 number) AS
+BEGIN
+INSERT INTO Student VALUES(N,P,Nr,Mg,M1,M2,M3);
+EXCEPTION
+WHEN others THEN
+RAISE_APPLICATION_ERROR(-20000,'ADAUGARE NEREUSITA!');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE adaugare_nota(Nr varchar,D varchar,NrP number,Nota number,Data date) AS
+BEGIN
+INSERT INTO Note VALUES(Nr,D,NrP,Nota,Data);
+EXCEPTION
+WHEN others THEN
+RAISE_APPLICATION_ERROR(-20000,'ADAUGARE NEREUSITA!');
+END;
+/
+
+CREATE OR REPLACE PROCEDURE adaugare_disciplina(Cod integer,D varchar, AnS integer) AS
+BEGIN
+INSERT INTO Discipline VALUES(Cod,D,AnS);
+EXCEPTION
+WHEN others THEN
+RAISE_APPLICATION_ERROR(-20000,'ADAUGARE NEREUSITA!');
+END;
+/
+
+
+CREATE OR REPLACE TRIGGER Trig1
+AFTER INSERT ON Note
+FOR EACH ROW
+DECLARE
+M1 number;
+M2 number;
+M3 number;
+MediaG number;
+An integer;
+BEGIN
+Select Anul_s INTO An FROM Discipline 
+WHERE :New.cod_d=Cod_d;
+SELECT Media_1 INTO M1 FROM Student WHERE :NEW.nr_leg=nr_leg;
+SELECT Media_2 INTO M2 FROM Student WHERE :NEW.nr_leg=nr_leg;
+SELECT Media_3 INTO M3 FROM  Student WHERE :NEW.nr_leg=nr_leg;
+IF (An=1) and (:NEW.Nota>M1) THEN
+UPDATE Student SET Media_1=:NEW.Nota WHERE nr_leg=:NEW.nr_leg;
+SELECT Media_1 INTO M1 FROM Student WHERE nr_leg=:NEW.nr_leg;
+ELSE IF (An=2) and (:NEW.Nota>M2) THEN
+UPDATE Student SET Media_2=:NEW.Nota WHERE nr_leg=:NEW.nr_leg;
+SELECT Media_2 INTO M2 FROM Student WHERE nr_leg=:NEW.nr_leg;
+ELSE IF (:NEW.Nota>M3) THEN
+UPDATE Student SET Media_3=:NEW.Nota WHERE nr_leg=:NEW.nr_leg;
+SELECT Media_3 INTO M3 FROM  Student WHERE nr_leg=:NEW.nr_leg;
+END IF;
+END IF;
+END IF;
+MediaG:=0;
+An:=0;
+IF M1>0 THEN
+An:=1;
+MediaG:=MediaG+M1;
+END IF;
+IF M2>0 THEN
+An:=3;
+MediaG:=MediaG+M2;
+END IF;
+IF M3>0 THEN
+An:=3;
+MediaG:=MediaG+M3;
+END IF;
+MediaG:=MediaG/An;
+UPDATE Student SET Media_G=MediaG WHERE:NEW.nr_leg=nr_leg;
+EXCEPTION
+WHEN others THEN
+RAISE_APPLICATION_ERROR(-20000,'ADAUGARE NEREUSITA!');
+END;
+/
+
+EXEC adaugare_student('Popa','Ion','123456',0,0,0,0);
+EXEC adaugare_student('Adam','Gheorghe','123457',0,0,0,0);
+EXEC adaugare_student('Pop','George','123458',0,0,0,0);
+
+EXEC adaugare_disciplina(1,'Matematica',1);
+EXEC adaugare_disciplina(2,'Fizica',1);
+EXEC adaugare_disciplina(3,'Chimie',2);
+EXEC adaugare_disciplina(4,'Engleza',3);
+
+
+EXEC adaugare_nota('123456',1,1,4,'22.12.2020');
+EXEC adaugare_nota('123457',2,1,9,'12.12.2020');
+EXEC adaugare_nota('123456',3,1,10,'01.03.2020');
+EXEC adaugare_nota('123456',4,2,9,'02.09.2020');
+EXEC adaugare_nota('123458',1,1,10,'12.12.2020');
+EXEC adaugare_nota('123456',1,1,5,'22.12.2020');
+
+SELECT B.nr_leg,C.N_disciplina,Max(B.Nota) FROM Note B,Discipline C
+WHERE  B.cod_d=C.cod_d 
+HAVING Max(Nota)<5
+GROUP BY B.cod_d,B.nr_leg,C.N_disciplina;
+
+SELECT A.Nume,A.Prenume,A.nr_leg,Max(C.Anul_s) FROM Student A,Note B,Discipline C
+WHERE A.nr_leg=B.nr_leg and C.cod_d=B.cod_d
+GROUP BY  A.Nume,A.Prenume,A.nr_leg;
+
+SELECT A.Nume,A.Prenume,A.nr_leg,C.N_disciplina,MAX(B.Nota) FROM Student A,Note B,Discipline C
+WHERE A.nr_leg=B.nr_leg and C.cod_d=B.cod_d
+HAVING Max(nota)>4
+GROUP BY A.Nume,A.Prenume,A.nr_leg,C.N_disciplina,C.Anul_s
+ORDER BY A.Nume,A.Prenume,C.Anul_s,C.N_disciplina;
+
+SELECT Promo(1) AS P_procente_Matematica from dual;
+SELECT Promo(2) AS P_procente_Fizica from dual;
+SELECT Promo(3) AS P_procente_Chimie from dual;
+SELECT Promo(4) AS P_procente_Engleza from dual;
+
+
+
+SELECT A.Nume,A.Prenume,A.nr_leg,
+FROM Student A,Note B,Discipline C;
+
+
+
+SELECT*FROM Student;
+SELECT*FROM Note;
+SELECT*FROM Discipline;
+
+
+DROP TABLE Note;
+DROP TABLE Discipline;
+DROP TABLE Student;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CREATE OR REPLACE TRIGGER Trig1
+AFTER INSERT ON Note
+FOR EACH ROW
+DECLARE
+Medie number;
+An number;
+materi_not number;
+Nrmateri number;
+Aux number;
+BEGIN
+SELECT Anul_S INTO An FROM Discipline  WHERE :NEW.cod_d=cod_d;
+DBMS_OUTPUT.PUT_LINE (An);
+SELECT COUNT(Anul_S) INTO Nrmateri FROM Discipline 
+WHERE An=Anul_S;
+
+SELECT Mat INTO materi_not FROM (SELECT  Count(distinct B.cod_d) AS Mat FROM Note B,Discipline C
+WHERE C.Anul_S=An AND B.nr_leg='111111' AND B.cod_d=C.cod_d AND (B.cod_d IS NOT NULL));
+
+SELECT SUM(MAX(Nota)) INTO AUX FROM Note B,Discipline C
+WHERE C.Anul_S=An and B.nr_leg=:NEW.nr_leg 
+GROUP BY B.cod_d,Nota;
+
+Medie:=(((nrmateri-materi_not)*4)+aux)/nrmateri;
+UPDATE Student SET Media_1=Medie WHERE nr_leg=:NEW.nr_leg;
+IF 2=An THEN
+UPDATE Student SET Media_2=Medie WHERE nr_leg=:NEW.nr_leg;
+ELSE 
+UPDATE Student SET Media_3=Medie WHERE nr_leg=:NEW.nr_leg;
+END IF; 
+EXCEPTION 
+WHEN others THEN
+DBMS_OUTPUT.PUT_LINE ('ceva nu merge');
+DBMS_OUTPUT.PUT_LINE ('An:');
+DBMS_OUTPUT.PUT_LINE (An);
+DBMS_OUTPUT.PUT_LINE ('Mat_not:');
+DBMS_OUTPUT.PUT_LINE (MATERI_NOT);
+DBMS_OUTPUT.PUT_LINE ('Nrmat:');
+DBMS_OUTPUT.PUT_LINE (nrmateri);
+DBMS_OUTPUT.PUT_LINE ('Aux:');
+DBMS_OUTPUT.PUT_LINE (AUX);
+DBMS_OUTPUT.PUT_LINE ('Medie:');
+DBMS_OUTPUT.PUT_LINE (Medie);
+END;
+/
+
+SELECT Anul_S FROM Discipline  WHERE 3=cod_d;
+
+SELECT  Count(DISTINCT B.cod_d) FROM Note B,Discipline C
+WHERE C.Anul_S=1 and B.nr_leg='111111' and B.cod_d=C.cod_d
+GROUP BY B.COD_d;
+
+SELECT COUNT(Anul_S) FROM Discipline 
+WHERE 2=Anul_S;
+
+SELECT NVL((SELECT MAX(NOTA) FROM NOTE B,Discipline C WHERE Anul_S=(SELECT Anul_S FROM Discipline C WHERE 1=C.cod_d) GROUP BY B.cod_d) ,1)) 
+FROM Note B,Discipline C 
+WHERE nr_leg='111111' and B.cod_d=C.cod_d
+GROUP BY C.cod_d;
+
+
+SELECT MAX(NOTA) FROM NOTE B,Discipline C 
+WHERE C.Anul_S=1 and nr_leg='111111'
+GROUP BY B.cod_d;
+
+
+
+SELECT MAX(NOTA) FROM NOTE B,Discipline C WHERE Anul_S=(SELECT Anul_S FROM Discipline C WHERE 1=C.cod_d) and B.cod_d=C.cod_d GROUP BY C.cod_d;
+
+SELECT  Count(DISTINCT B.cod_d) FROM Note B,Discipline C
+WHERE Anul_S=(SELECT Anul_S FROM Discipline C WHERE 1=C.cod_d) and nr_leg='111111' and B.cod_d=C.cod_d;
+ 
+SELECT SUM(MAX(Nota)) FROM Note B,Discipline C
+WHERE Anul_S=(SELECT Anul_S FROM Discipline C WHERE 1=C.cod_d) and nr_leg='111111' 
+GROUP BY B.cod_d;
+
+SELECT MAX(Nota) FROM NOTE B,Discipline C
+WHERE  Anul_S=(SELECT Anul_S FROM Discipline C WHERE 1=C.cod_d) and nr_leg='111111' 
+GROUP BY B.cod_d;
+
+SELECT COUNT(Anul_S) FROM Discipline C
+WHERE (SELECT Anul_S FROM Discipline C WHERE 1=C.cod_d)=Anul_S;
+
+SELECT  Count(DISTINCT B.cod_d) INTO materi_not FROM Note B,Discipline C
+WHERE Anul_S=An and nr_leg=:NEW.nr_leg and B.cod_d=C.cod_d;
+
+EXEC adaugare_student('Popa','Ion','123456',0,0,0,0);
+EXEC adaugare_student('Adam','Gheorghe','123457',0,0,0,0);
+EXEC adaugare_student('Pop','George','123458',0,0,0,0);
+
+EXEC adaugare_disciplina(1,'Matematica',1);
+EXEC adaugare_disciplina(2,'Fizica',1);
+EXEC adaugare_disciplina(3,'Chimie',2);
+EXEC adaugare_disciplina(4,'Engleza',3);
+
+
+EXEC adaugare_nota('123456',1,1,4,'22.12.2020');
+EXEC adaugare_nota('123457',2,1,9,'12.12.2020');
+EXEC adaugare_nota('123456',3,1,10,'01.03.2020');
+EXEC adaugare_nota('123456',4,2,9,'02.09.2020');
+EXEC adaugare_nota('123458',1,1,10,'12.12.2020');
+
+
+EXEC adaugare_nota('222222',2,1,6,'01.03.2021');
+EXEC adaugare_nota('222222',3,2,7,'23.08.2021');
+EXEC adaugare_nota('222222',4,1,5,'14.03.2022');
+EXEC adaugare_nota('333333',1,3,5,'24.03.2020');
+EXEC adaugare_nota('333333',2,2,9,'19.05.2021');
+EXEC adaugare_nota('333333',5,1,8,'15.02.2022');
+EXEC adaugare_nota('333333',6,1,6,'29.03.2022');
+
+CREATE OR REPLACE TRIGGER Trig1
+BEFORE INSERT ON Note
+FOR EACH ROW
+DECLARE
+MEDIE number
+BEGIN
+SELECT
+
+
+END;
+/
+
+
+
+
+
+
+
+
+SELECT*FROM Student;
+SELECT*FROM Note;
+SELECT*FROM Discipline;
+
+
+DROP TABLE Note;
+DROP TABLE Discipline;
+DROP TABLE Student;
