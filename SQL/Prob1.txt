@@ -1,0 +1,158 @@
+SET AUTOCOMMIT ON;
+SELECT SYSDATE FROM DUAL;
+ALTER SESSION SET NLS_DATE_FORMAT=’DD-MM-YY’; 
+SET SERVEROUTPUT ON;
+
+CREATE TABLE Evidenta_angajati(
+cnp char(13) PRIMARY KEY,
+nume varchar(20),
+data_nasterii date); 
+
+CREATE OR REPLACE TRIGGER trig2
+BEFORE INSERT ON Evidenta_angajati
+FOR EACH ROW
+DECLARE 
+cnp_sub char(6);
+er EXCEPTION;
+datacnp date;
+BEGIN
+IF :NEW.data_nasterii is NULL THEN
+cnp_sub:=substr(:NEW.cnp,6,2)||substr(:NEW.cnp,4,2)||substr(:NEW.cnp,2,2);
+datacnp:=to_date(cnp_sub,'dd-mm-yy');
+:NEW.data_nasterii:=datacnp;
+END IF;
+IF :NEW.data_nasterii>sysdate THEN
+RAISE er;
+END IF;
+EXCEPTION
+WHEN er THEN
+ DBMS_OUTPUT.PUT_LINE('data nasterii sau cnp invalid');
+WHEN Others THEN
+DBMS_OUTPUT.PUT_LINE('A aparut o eroare');
+END;
+/
+
+INSERT INTO Evidenta_angajati VALUES(’2830823350077’, ’vali’, NULL);
+SELECT * FROM Evidenta_angajati; 
+
+DROP TABLE Evidenta_angajati;
+
+------------------------------------
+
+CREATE TABLE produse(
+id_produs integer PRIMARY KEY,
+nume_produs varchar(30) NOT NULL,
+pret_bucata number(5,2) NOT NULL, 
+stoc integer NOT NULL);
+
+CREATE TABLE vanzari(
+id_produs integer NOT NULL REFERENCES produse(id_produs),
+cantitate integer,
+cost_total number (7,2)); 
+
+INSERT INTO produse VALUES (1, ’paine’, 5, 1);
+INSERT INTO produse VALUES (2, ’lapte’, 8, 5);
+INSERT INTO produse VALUES (3, ’iaurt’, 6, 7);
+INSERT INTO produse VALUES (4, ’kefir’, 7, 7);
+
+CREATE OR REPLACE TRIGGER Trig_Vanzari
+BEFORE INSERT ON vanzari
+FOR EACH ROW
+DECLARE
+pret_unit number(5,2);
+stoc_trig integer;
+er EXCEPTION;
+BEGIN
+SELECT stoc INTO stoc_trig FROM produse WHERE id_produs=:NEW.id_produs;
+IF :NEW.cantitate>stoc_trig THEN
+RAISE er;
+ELSE
+SELECT pret_bucata INTO pret_unit FROM produse WHERE id_produs=:NEW.id_produs;
+:NEW.cost_total:=pret_unit*(:NEW.cantitate);
+UPDATE produse SET stoc=stoc-:NEW.cantitate WHERE id_produs=:NEW.id_produs;
+END IF;
+EXCEPTION
+WHEN er THEN
+RAISE_APPLICATION_ERROR(-20000, 'Eroare: Stoc INSUFICIENT!'); 
+WHEN Others THEN
+DBMS_OUTPUT.PUT_LINE('A aparut o eroare');
+END;
+/
+
+INSERT INTO vanzari VALUES (1,3,NULL);
+INSERT INTO vanzari VALUES (2,4,NULL);
+
+SELECT * FROM produse;
+SELECT * FROM vanzari;
+
+DROP TABLE VANZARI;
+DROP TABLE PRODUSE;
+
+---------------------------------------
+
+CREATE TABLE useri(
+id_user integer PRIMARY KEY,
+username varchar(20) NOT NULL,
+email varchar(30) NOT NULL,
+pasaport_nr varchar(10),
+permis_conducere_nr varchar(10));
+
+CREATE TABLE remindere(
+id_user integer NOT NULL REFERENCES useri(id_user),
+text_reminder varchar(200),
+data_reminder date,
+status varchar(10));
+
+CREATE OR REPLACE TRIGGER TRIG_REMINDER
+AFTER INSERT ON useri
+FOR EACH ROW
+DECLARE
+text varchar(200);
+data date;
+status varchar(10);
+BEGIN
+status:='PENDING';
+IF(:NEW.pasaport_nr is NULL) AND (:NEW.permis_conducere_nr is NULL) THEN
+text:='Nu ati introdus numarul pasaportului si nici numarul permisului de conducere';
+INSERT INTO remindere VALUES(:NEW.id_user,text,sysdate,status);
+END IF;
+IF(:NEW.pasaport_nr is NULL) THEN
+text:='Nu ati intodus numarul pasaportului';
+INSERT INTO remindere VALUES(:NEW.id_user,text,sysdate,status);
+END IF;
+IF(:NEW.permis_conducere_nr is NULL) THEN
+text:='Nu ati introdus numarul permisului de conducere';
+INSERT INTO remindere VALUES(:NEW.id_user,text,sysdate,status);
+END IF;
+EXCEPTION 
+WHEN others THEN
+DBMS_OUTPUT.PUT_LINE('A aparut o eroare');
+END;
+/
+
+ 
+INSERT INTO useri VALUES(1, ’adi’, ’adi@yahoo.com’, ’224477’, ’333555’);
+SELECT * FROM useri;
+SELECT * FROM remindere;
+
+INSERT INTO useri VALUES(2, ’adina’, ’adina@yahoo.com’, '', ’333555’);
+SELECT * FROM useri;
+SELECT * FROM remindere;
+
+INSERT INTO useri VALUES(3, ’maria’, ’maria@yahoo.com’, ’224477’, NULL);
+SELECT * FROM useri;
+SELECT * FROM remindere;
+
+INSERT INTO useri VALUES(4, ’vali’, ’vali@yahoo.com’, NULL, NULL);
+SELECT * FROM useri;
+SELECT * FROM remindere;
+
+DROP TABLE remindere;
+DROP TABLE useri;
+
+
+
+
+
+
+
