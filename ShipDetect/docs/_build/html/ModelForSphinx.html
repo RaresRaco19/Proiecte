@@ -1,0 +1,329 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="" lang="" version="-//W3C//DTD XHTML 1.1//EN" xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="">
+    <link rel="icon" type="image/x-icon" href="">
+
+  
+  <title>ModelForSphinx module &mdash; ModelSphinx 1.0.0 documentation</title>
+  
+
+  
+
+  
+
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'/>
+
+
+  <link rel="stylesheet" href="_static/css/img.css" type="text/css"/>
+  
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/pdj.css" type="text/css" />
+  
+
+  
+
+  <link rel="stylesheet" href="_static/css/darker.css" type="text/css" media="(prefers-color-scheme: dark)"/>
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="ModelSphinx 1.0.0 documentation" href="index.html"/>
+
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta http-equiv="cache-control" content="public" />
+    <meta name="robots" content="follow, all" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Add jQuery library -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    <script type="module" src="https://googlechromelabs.github.io/dark-mode-toggle/src/dark-mode-toggle.mjs"></script>
+
+  </head>
+
+  <body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+	
+        <a href="index.html" class="fa fa-home"> ModelSphinx </a>
+	
+	
+        <div role="search">
+	  
+	  <form id ="rtd-search-form" class="wy-form"
+		action="search.html" method="get">
+	    <input type="text" name="q" placeholder="Search docs" />
+	    <input type="hidden" name="check_keywords" value="yes" />
+	    <input type="hidden" name="area" value="default" />
+	  </form>
+	  
+	</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	
+          
+          
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ModelForSphinx module</a><ul>
+<li><a class="reference internal" href="#ModelForSphinx.augment_add"><code class="docutils literal notranslate"><span class="pre">augment_add()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.check_suffle"><code class="docutils literal notranslate"><span class="pre">check_suffle()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.conca_view"><code class="docutils literal notranslate"><span class="pre">conca_view()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.create_model"><code class="docutils literal notranslate"><span class="pre">create_model()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.distrib_train"><code class="docutils literal notranslate"><span class="pre">distrib_train()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.divide_set"><code class="docutils literal notranslate"><span class="pre">divide_set()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.first_view"><code class="docutils literal notranslate"><span class="pre">first_view()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.load_data"><code class="docutils literal notranslate"><span class="pre">load_data()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.save_data"><code class="docutils literal notranslate"><span class="pre">save_data()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.suffle_set"><code class="docutils literal notranslate"><span class="pre">suffle_set()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.train"><code class="docutils literal notranslate"><span class="pre">train()</span></code></a></li>
+<li><a class="reference internal" href="#ModelForSphinx.verify_augdata"><code class="docutils literal notranslate"><span class="pre">verify_augdata()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+          
+        
+
+      </div>
+      &nbsp;
+    </nav>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      <nav class="wy-nav-top" id="barra-mobile" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">ModelSphinx </a>
+      </nav>
+
+      <div class="wy-nav-content">
+	<div class="fundo-claro">
+	</div>
+	<div class="fundo-escuro">
+	</div>
+
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+	    
+	    <!-- <ul class="wy-breadcrumbs"> -->
+	    <!--   <li><a href="#">Docs</a> &raquo;</li> -->
+
+	    <!--   <li>Features</li> -->
+	    <!--   <li class="wy-breadcrumbs-aside"> -->
+
+	    <!-- 	<a href="_sources/index.txt" rel="nofollow"> View page source</a> -->
+
+	    <!--   </li> -->
+	    <!-- </ul> -->
+	    <!-- <hr/> -->
+	  </div>
+          <div role="main" class="">
+
+	    <div id="content" class="hfeed entry-container hentry">
+      	<div id="dark-mode-toggle-container">
+	  <dark-mode-toggle appearance="toggle" dark="switch to light mode" light="switch to dark mode">
+	  </dark-mode-toggle>
+	</div>
+  <section id="module-ModelForSphinx">
+<span id="modelforsphinx-module"></span><h1>ModelForSphinx module<a class="headerlink" href="#module-ModelForSphinx" title="Permalink to this heading">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.augment_add">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">augment_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequential</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#augment_add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.augment_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply data augmentation to the images with ship labels.
+In our case we decide to apply two times per image on purpose to have a smooth distribution</p>
+<p>Args:
+- images: NumPy array, the images to be augmented.
+- seg: imgaug.augmenters.Sequential, the augmentation sequence.
+- labels: NumPy array, the corresponding labels.</p>
+<p>Returns:
+- augmented_images: NumPy array, the augmented images.
+- augmented_labels: NumPy array, the corresponding augmented labels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.check_suffle">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">check_suffle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iamges</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#check_suffle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.check_suffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check the shuffled images and labels.</p>
+<p>Args:
+- images: NumPy array, the images.
+- labels: NumPy array, the corresponding labels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.conca_view">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">conca_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#conca_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.conca_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the distribution of classes after augmentation.</p>
+<p>Args:
+- images: NumPy array, the images.
+- labels: NumPy array, the corresponding labels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.create_model">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">create_model</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#create_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.create_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a convolutional neural network model.(specific for computer vision aplication)
+First and second layers are convolutional layes using different hyperparameters with MaxPooling and Dropout on each layer
+After Flatten starts normal layers with relu as activation function(right for this kind of aplication) and sigmoid for last layer(right for models that use binary classification)</p>
+<p>Returns:
+- model: keras.models.Sequential, the created model.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.distrib_train">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">distrib_train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train_labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#distrib_train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.distrib_train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the distribution of classes in the training set.</p>
+<p>Args:
+- train_labels: NumPy array, the labels of the training set.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.divide_set">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">divide_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#divide_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.divide_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divide the dataset into train, validation, and test sets.
+With a procent of 70% for training data, 20% for validation data and 10% for test data</p>
+<p>Args:
+- images: NumPy array, the images.
+- labels: NumPy array, the corresponding labels.</p>
+<p>Returns:
+- train_images: NumPy array, the images for training.
+- train_labels: NumPy array, the corresponding labels for training.
+- validation_images: NumPy array, the images for validation.
+- validation_labels: NumPy array, the corresponding labels for validation.
+- test_images: NumPy array, the images for testing.
+- test_labels: NumPy array, the corresponding labels for testing.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.first_view">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">first_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#first_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.first_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the distribution of classes and show a random image.</p>
+<p>Args:
+- images: NumPy array, the images.
+- labels: NumPy array, the corresponding labels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.load_data">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">load_data</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#load_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the images and labels from the dataset folder.
+Using OpenCv2 for read and convert image to RGB.
+Np arrays to store de dataset and divide every pixel to 255.0 result into unic value between 0 and 1.</p>
+<p>Returns:
+- images: NumPy array, the loaded images.
+- labels: NumPy array, the corresponding labels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.save_data">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">save_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#save_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.save_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the concatenate images with their corresponding labels for using later to test the model in another script.</p>
+<p>Args:
+- images: NumPy array, the images to be saved.
+- labels: NumPy array, the corresponding labels.</p>
+<p>Returns:
+- True if the data is saved successfully, False otherwise.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.suffle_set">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">suffle_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#suffle_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.suffle_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle the images and labels with same seed to keep image from position x correlated to corresponding label</p>
+<p>Args:
+- images: NumPy array, the images.
+- labels: NumPy array, the corresponding labels.</p>
+<p>Returns:
+- shuffled_images: NumPy array, the shuffled images.
+- shuffled_labels: NumPy array, the corresponding shuffled labels.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.train">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">train</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#train"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.train" title="Permalink to this definition">¶</a></dt>
+<dd><p>Train the model. Where magic happens.
+We train our model with optimizer Adam(one of the most optimizer use in this moments for ML).
+Adam optimizer is a combination of RMS and Momentom optimizer.
+beta_1 and beta_2 in most cases keeps this standart value.(beta_1=0.9 and beta_2=0.999)
+Same for learning_rate(usually equal with 0.001). Every neuron have his learning_rate but here we set the maximum learning_rate.
+Args:
+- model: keras.models.Sequential, the model to be trained.
+- epochs: int, the number of epochs for training.</p>
+<p>Returns:
+- history: keras.callbacks.History, the training history.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ModelForSphinx.verify_augdata">
+<span class="sig-prename descclassname"><span class="pre">ModelForSphinx.</span></span><span class="sig-name descname"><span class="pre">verify_augdata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">augment_images</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">augment_labels</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ModelForSphinx.html#verify_augdata"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ModelForSphinx.verify_augdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Visualize the augmented data.</p>
+<p>Args:
+- augmented_images: NumPy array, the augmented images.
+- augmented_labels: NumPy array, the corresponding augmented labels.</p>
+</dd></dl>
+
+</section>
+
+
+	    </div>
+            <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2023, Royce.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/jucacrispim/sphinx_pdj_theme">theme</a> provided by <a href="https://poraodojuca.dev">Porão do Juca</a>.
+
+</footer>
+	</div>
+	</div>
+	  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+    <script type="text/javascript" src="_static/documentation_options.js">
+
+    </script>
+    <script type="text/javascript" src="_static/doctools.js">
+
+    </script>
+    <script type="text/javascript" src="_static/sphinx_highlight.js">
+
+    </script>
+
+  
+
+   <script type="text/javascript"
+           src="_static/js/theme.js"></script>
+
+   <script type="text/javascript"
+           src="_static/js/pdj.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+  </body>
+</html>
